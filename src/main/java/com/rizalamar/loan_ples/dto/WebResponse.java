@@ -1,4 +1,4 @@
-package com.rizalamar.loan_ples.dto.auth;
+package com.rizalamar.loan_ples.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
