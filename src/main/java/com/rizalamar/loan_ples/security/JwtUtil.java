@@ -23,49 +23,46 @@ public class JwtUtil {
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
-    public String generateToken(String email){
+    public String generateToken(String email) {
         return generateToken(new HashMap<>(), email);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, String email){
-        return Jwts.builder()
-                .claims(extraClaims)
-                .subject(email)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSignKey())
-                .compact();
+    public String generateToken(Map<String, Object> extraClaims, String email) {
+        return Jwts.builder().claims(extraClaims).subject(email).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + jwtExpiration)).signWith(getSignKey()).compact();
     }
 
-    public String extractEmail(String token){
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
-        final Claims claims =extractAllClaims(token);
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSignKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser().verifyWith(getSignKey()).build().parseSignedClaims(token).getPayload();
+        } catch (Exception e) {
+            System.out.println("DEBUG: JWT Parsing Error: " + e.getMessage());
+            throw e;
+        }
+
     }
 
-    public boolean isTokenValid(String token, String email){
+    public boolean isTokenValid(String token, String email) {
         String extractedEmail = extractEmail(token);
         boolean isEmailEquals = extractedEmail.equals(email);
         boolean isTokenExpired = isTokenExpired(token);
-        return isEmailEquals && isTokenExpired;
+
+        return isEmailEquals && !isTokenExpired;
     }
 
-    private boolean isTokenExpired(String token){
+    private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    private SecretKey getSignKey(){
+    private SecretKey getSignKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
