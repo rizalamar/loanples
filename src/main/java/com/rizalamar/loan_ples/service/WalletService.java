@@ -39,4 +39,21 @@ public class WalletService {
                 .balance(wallet.getBalance())
                 .build();
     }
+
+    @Transactional
+    public WalletResponse withdraw(User user, WalletTransactionRequest request){
+        Wallet wallet = walletRepository.findByUserEmail(user.getEmail());
+
+        if(wallet.getBalance().compareTo(request.amount()) < 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
+        }
+
+        wallet.setBalance(wallet.getBalance().subtract(request.amount()));
+        walletRepository.save(wallet);
+
+        return WalletResponse.builder()
+                .userId(user.getId())
+                .balance(wallet.getBalance())
+                .build();
+    }
 }

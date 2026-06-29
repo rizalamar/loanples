@@ -50,4 +50,20 @@ public class WalletController {
                 );
     }
 
+    @PostMapping("/withdraw")
+    @PreAuthorize("hasAnyAuthority('ROLE_BORROWER', 'ROLE_LENDER')")
+    public ResponseEntity<WebResponse<WalletResponse>> withdraw(
+            @CurrentUser User user,
+            @Valid @RequestBody WalletTransactionRequest request
+    ) {
+        WalletResponse walletResponse = walletService.withdraw(user, request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(
+                        WebResponse.<WalletResponse>builder()
+                                .data(walletResponse)
+                                .errors(null)
+                                .build()
+                );
+    }
 }
