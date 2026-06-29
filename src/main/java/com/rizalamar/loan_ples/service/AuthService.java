@@ -2,10 +2,12 @@ package com.rizalamar.loan_ples.service;
 
 import com.rizalamar.loan_ples.domain.Role;
 import com.rizalamar.loan_ples.domain.User;
+import com.rizalamar.loan_ples.domain.Wallet;
 import com.rizalamar.loan_ples.dto.auth.AuthResponse;
 import com.rizalamar.loan_ples.dto.auth.LoginRequest;
 import com.rizalamar.loan_ples.dto.auth.RegisterRequest;
 import com.rizalamar.loan_ples.repository.UserRepository;
+import com.rizalamar.loan_ples.repository.WalletRepository;
 import com.rizalamar.loan_ples.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +28,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final WalletRepository walletRepository;
 
     public AuthResponse register(RegisterRequest request) {
         if(userRepository.existsByEmail(request.email())){
@@ -39,6 +43,13 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+
+        Wallet wallet = Wallet.builder()
+                .user(user)
+                .balance(BigDecimal.ZERO)
+                .build();
+
+        walletRepository.save(wallet);
 
         String token = jwtUtil.generateToken(user.getEmail());
 
