@@ -4,6 +4,7 @@ import com.rizalamar.loan_ples.domain.User;
 import com.rizalamar.loan_ples.domain.Wallet;
 import com.rizalamar.loan_ples.dto.wallet.WalletResponse;
 import com.rizalamar.loan_ples.dto.wallet.WalletTransactionRequest;
+import com.rizalamar.loan_ples.mapper.WalletMapper;
 import com.rizalamar.loan_ples.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,15 +17,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class WalletService {
 
     private final WalletRepository walletRepository;
+    private final WalletMapper walletMapper;
 
     @Transactional(readOnly = true)
     public WalletResponse getBalance(User user){
         Wallet wallet = walletRepository.findByUserEmail(user.getEmail());
 
-        return WalletResponse.builder()
-                .userId(wallet.getUser().getId())
-                .balance(wallet.getBalance())
-                .build();
+        return walletMapper.toResponse(wallet);
     }
 
     @Transactional
@@ -51,9 +50,6 @@ public class WalletService {
         wallet.setBalance(wallet.getBalance().subtract(request.amount()));
         walletRepository.save(wallet);
 
-        return WalletResponse.builder()
-                .userId(user.getId())
-                .balance(wallet.getBalance())
-                .build();
+        return walletMapper.toResponse(wallet);
     }
 }
