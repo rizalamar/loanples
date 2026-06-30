@@ -6,13 +6,13 @@
 - [x] Authentication (Register/Login & JWT)
 
 ## Phase 2: Security
-- [ ] Authorization (RBAC) - **Current Task**
+- [x] Authorization (RBAC) 
 
-## Phase 3: Core Logic
-- [ ] Wallet Management (Top-up/Withdraw)
-- [ ] Loan Creation (Borrower)
-- [ ] Loan Marketplace & Funding (Lender)
-- [ ] Amortization Engine (Automated Schedule)
+## Phase 3: Core Logic (Completed)
+- [x] Wallet Management (Top-up/Withdraw)
+- [x] Loan Creation (Borrower)
+- [x] Loan Marketplace & Funding (Lender)
+- [x] Amortization Engine (Automated Schedule)
 
 ## Phase 4: Transactions
 - [ ] Repayment & Payment Processing
