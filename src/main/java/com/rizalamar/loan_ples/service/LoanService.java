@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +38,13 @@ public class LoanService {
         Loan savedLoan = loanRepository.save(loan);
 
         return loanMapper.toResponse(savedLoan);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LoanResponse> getMarketplace(){
+        return loanRepository.findByStatus(LoanStatus.PENDING)
+                .stream()
+                .map(loanMapper::toResponse)
+                .toList();
     }
 }
