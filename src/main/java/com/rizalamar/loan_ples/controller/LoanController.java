@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -46,6 +47,22 @@ public class LoanController {
                 .body(
                         WebResponse.<List<LoanResponse>>builder()
                                 .data(loanResponseList)
+                                .errors(null)
+                                .build()
+                );
+    }
+
+    @PostMapping("/{loanId}/fund")
+    @PreAuthorize("hasAnyAuthority('ROLE_LENDER')")
+    public ResponseEntity<WebResponse<String>> fundLoan(
+            @CurrentUser User lender,
+            @PathVariable UUID loanId
+            ) {
+        loanService.fundLoan(lender, loanId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        WebResponse.<String>builder()
+                                .data("Loan funded successfully")
                                 .errors(null)
                                 .build()
                 );
