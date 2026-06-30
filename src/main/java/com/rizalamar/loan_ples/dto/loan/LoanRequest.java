@@ -1,5 +1,6 @@
 package com.rizalamar.loan_ples.dto.loan;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,7 +13,7 @@ public record LoanRequest(
         BigDecimal principalAmount,
 
         @NotNull(message = "Tenor months is required")
-        @Min(1)
+        @Min(1) @Max(24)
         Integer tenorMonths
 ) {
 }
