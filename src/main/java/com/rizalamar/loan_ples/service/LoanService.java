@@ -39,7 +39,7 @@ public class LoanService {
                 .borrower(user)
                 .principalAmount(request.principalAmount())
                 .tenorMonths(request.tenorMonths())
-                .interestRate(new BigDecimal("0.0.5"))
+                .interestRate(new BigDecimal("0.05"))
                 .status(LoanStatus.PENDING)
                 .build();
 
