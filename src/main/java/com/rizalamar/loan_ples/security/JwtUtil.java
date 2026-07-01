@@ -44,7 +44,6 @@ public class JwtUtil {
         try {
             return Jwts.parser().verifyWith(getSignKey()).build().parseSignedClaims(token).getPayload();
         } catch (Exception e) {
-            System.out.println("DEBUG: JWT Parsing Error: " + e.getMessage());
             throw e;
         }
 
