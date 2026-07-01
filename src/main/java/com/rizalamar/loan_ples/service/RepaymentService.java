@@ -1,8 +1,6 @@
 package com.rizalamar.loan_ples.service;
 
-import com.rizalamar.loan_ples.domain.LoanSchedule;
-import com.rizalamar.loan_ples.domain.LoanStatus;
-import com.rizalamar.loan_ples.domain.User;
+import com.rizalamar.loan_ples.domain.*;
 import com.rizalamar.loan_ples.repository.LoanRepository;
 import com.rizalamar.loan_ples.repository.LoanScheduleRepository;
 import com.rizalamar.loan_ples.repository.UserRepository;
@@ -24,6 +22,7 @@ public class RepaymentService {
 
     private final LoanScheduleRepository loanScheduleRepository;
     private final ValidationService validationService;
+    private final TransactionService transactionService;
 
     @Transactional
     public void payInstallment(User borrower, UUID scheduleId){
@@ -39,6 +38,8 @@ public class RepaymentService {
         // Tambah saldo lender
         User lender = schedule.getLoan().getLender();
         lender.getWallet().setBalance(lender.getWallet().getBalance().add(schedule.getAmountToPay()));
+
+        transactionService.createTransaction(lender.getWallet(), schedule.getAmountToPay(), TransactionType.REPAYMENT);
 
         // Update status schecule
         schedule.setPaid(true);
