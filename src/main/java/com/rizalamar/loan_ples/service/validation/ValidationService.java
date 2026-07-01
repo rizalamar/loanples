@@ -1,5 +1,6 @@
 package com.rizalamar.loan_ples.service.validation;
 
+import com.rizalamar.loan_ples.domain.Loan;
 import com.rizalamar.loan_ples.domain.LoanSchedule;
 import com.rizalamar.loan_ples.domain.LoanStatus;
 import com.rizalamar.loan_ples.domain.User;
@@ -33,6 +34,12 @@ public class ValidationService {
 
         if(borrower.getWallet().getBalance().compareTo(schedule.getAmountToPay()) < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
+        }
+    }
+
+    public void validateLoanFunding(User lender, Loan loan){
+        if(loan.getBorrower().getId().equals(lender.getId())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot fund your own loan");
         }
     }
 

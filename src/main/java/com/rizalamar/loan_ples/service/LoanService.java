@@ -76,6 +76,8 @@ public class LoanService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient balance");
         }
 
+        validationService.validateLoanFunding(lender, loan);
+
         // 4. Potong saldo
         lenderWallet.setBalance(lender.getWallet().getBalance().subtract(loan.getPrincipalAmount()));
         walletRepository.save(lenderWallet);
